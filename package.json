@@ -1,0 +1,27 @@
+{
+  "name": "edu_care",
+  "version": "1.0.0",
+  "description": "student online course management with exams, admin, student and teacher profiles",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "local": "NODE_ENV=local node server.js",
+    "qa": "NODE_ENV=qa node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql": "github:mysqljs/mysql",
+    "process": "^0.11.10"
+  },
+  "author": "Amit Kumar Bala Antu (antukbala@gmail.com)",
+  "license": "ISC"
+}
