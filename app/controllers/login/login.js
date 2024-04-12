@@ -25,30 +25,43 @@ function generateJWT(userDetails) {
 async function generateAccessToken(req, res) {
     try {
         let values = {};
-        const data = req.body.user;
+        const data = req.body;
         // TODO: PAYLOAD VALIDATION
         
-        if (payload) {
+        if (data) {
             values.email = data.email;
             
             const userData = await loginModel.getUserDataForLogin(values.email);
             if (userData === null) {
-                return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found'));
+                const newUserData = {
+                    name: data.name,
+                    email: values.email,
+                    loginProvider: data.provider,
+                    photoUrl: data.photo_url
+                }
+                const newUserId = await loginModel.createNewUser(newUserData);
+                if (newUserId === null) return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'Failed to create new User'));
+                values.newUserId = newUserId;
+            }
+            
+            const jwtData = (userData === null) ?
+            {
+                user_id: values.newUserId,
+                name: data.name,
+                mobile: null,
+                role: null,
+                is_new_user: true
+            }
+            :
+            {
+                user_id: userData.user_id,
+                name: userData.name,
+                mobile: userData.mobile,
+                role: userData.role,
+                is_new_user: false
             }
 
-            values.userId = userData.user_id;
-            values.officeId = userData.office_id;
-            values.name = userData.name;
-            values.mobile = userData.mobile;
-            values.categoryId = userData.category_id;
-            // values.photoUrl = userData.photo_url;
-            // values.loginId = userData.login_id;
-            // values.loginProvider = userData.login_provider;
-            values.officeName = userData.office_name;
-            values.department = userData.department;
-            values.title = userData.title;
-
-            const accessToken = generateJWT(values);
+            const accessToken = generateJWT(jwtData);
 
             return res.send({ status: 1000, access_token: accessToken });
         } else {
